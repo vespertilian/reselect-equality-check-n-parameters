@@ -4,17 +4,24 @@
   "description": "Only run the equality check on the first [n] arguments when using reselect",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm test",
-    "build": "webpack"
+    "test": "cross-env NODE_ENV=test karma start",
+    "build": "cross-env NODE_ENV=build webpack"
   },
   "author": "Cameron Batt",
   "license": "MIT",
   "devDependencies": {
-    "jasmine": "^2.5.3",
+    "@types/jasmine": "2.5.43",
+    "cross-env": "3.1.4",
+    "jasmine": "2.5.3",
+    "karma": "1.5.0",
+    "karma-chrome-launcher": "2.0.0",
+    "karma-jasmine": "1.1.0",
+    "karma-spec-reporter": "0.0.30",
+    "karma-webpack": "2.0.2",
     "reselect": "2.5.4",
-    "source-map-loader": "^0.1.6",
-    "ts-loader": "^2.0.1",
-    "typescript": "^2.2.1",
+    "source-map-loader": "0.1.6",
+    "ts-loader": "2.0.1",
+    "typescript": "2.2.1",
     "webpack": "2.2.1"
   },
   "peerDependencies": {

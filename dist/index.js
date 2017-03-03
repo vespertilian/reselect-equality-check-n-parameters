@@ -97,7 +97,6 @@ function equalityCheckOnlyFirstArg(func, equalityCheck) {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        console.log('memoize function');
         if (lastArg !== null &&
             equalityCheck(lastArg, args[0])) {
             return lastResult;
@@ -108,6 +107,19 @@ function equalityCheckOnlyFirstArg(func, equalityCheck) {
     };
 }
 exports.equalityCheckOnlyFirstArg = equalityCheckOnlyFirstArg;
+var Foo = (function () {
+    function Foo() {
+    }
+    Foo.prototype.bar = function (str) {
+        return hello(str);
+    };
+    return Foo;
+}());
+exports.Foo = Foo;
+function hello(str) {
+    return "hello " + str;
+}
+exports.hello = hello;
 
 
 /***/ })

@@ -7,7 +7,6 @@ export function equalityCheckOnlyFirstArg(func, equalityCheck = defaultEqualityC
     let lastArg = null;
     let lastResult = null;
     return (...args) => {
-        console.log('memoize function');
         if (
             lastArg !== null &&
             equalityCheck(lastArg, args[0])
@@ -19,3 +18,13 @@ export function equalityCheckOnlyFirstArg(func, equalityCheck = defaultEqualityC
         return lastResult;
     };
 }
+
+export class Foo {
+    public bar(str){
+        return hello(str)
+    }
+}
+export function hello(str: string) {
+    return `hello ${str}`
+}
+

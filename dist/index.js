@@ -107,19 +107,6 @@ function equalityCheckOnlyFirstArg(func, equalityCheck) {
     };
 }
 exports.equalityCheckOnlyFirstArg = equalityCheckOnlyFirstArg;
-var Foo = (function () {
-    function Foo() {
-    }
-    Foo.prototype.bar = function (str) {
-        return hello(str);
-    };
-    return Foo;
-}());
-exports.Foo = Foo;
-function hello(str) {
-    return "hello " + str;
-}
-exports.hello = hello;
 
 
 /***/ })

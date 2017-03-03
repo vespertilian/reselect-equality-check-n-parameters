@@ -4,27 +4,19 @@ export function defaultEqualityCheck(a, b) {
 
 // reselect-equality-check-n-args
 export function equalityCheckOnlyFirstArg(func, equalityCheck = defaultEqualityCheck) {
-    let lastArg = null;
-    let lastResult = null;
+    let lastArgs = null
+    let lastResult = null
+    // const isEqualToLastArg = (value, index) => equalityCheck(value, lastArgs[index])
+    const firstArgsEqual = (arg1) => equalityCheck(arg1, lastArgs[0]);
     return (...args) => {
         if (
-            lastArg !== null &&
-            equalityCheck(lastArg, args[0])
+            lastArgs === null ||
+            lastArgs.length !== args.length ||
+            !firstArgsEqual(args[0])
         ) {
-            return lastResult;
+            lastResult = func(...args)
         }
-        lastArg = args[0];
-        lastResult = func(...args);
-        return lastResult;
-    };
-}
-
-export class Foo {
-    public bar(str){
-        return hello(str)
+        lastArgs = args;
+        return lastResult
     }
 }
-export function hello(str: string) {
-    return `hello ${str}`
-}
-

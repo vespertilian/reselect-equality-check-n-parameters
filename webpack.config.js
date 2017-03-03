@@ -1,14 +1,7 @@
 var path = require('path');
-
 var config = {
     context: path.resolve(__dirname, 'src'),
     entry: './index.ts',
-    output: {
-        filename: 'index.js',
-        path: path.resolve(__dirname, 'dist'),
-        library: 'ReselectEqualityCheckNArgs',
-        libraryTarget: 'umd'
-    },
     module: {
         rules: [
             {
@@ -24,11 +17,11 @@ var config = {
 };
 
 if(process.env.NODE_ENV === 'build') {
-    console.log('building dist');
-    const umdLibrary = {
+    config.output = {
+        filename: 'index.js',
+        path: path.resolve(__dirname, 'dist'),
         library: 'ReselectEqualityCheckNArgs',
         libraryTarget: 'umd'
-    };
-    config.output = Object.assign(config.output, umdLibrary);
+    }
 }
 module.exports = config;

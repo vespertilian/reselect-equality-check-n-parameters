@@ -1,12 +1,14 @@
 import { createSelectorCreator, createSelector } from 'reselect'
-import { equalityCheckOnlyFirstArg } from '../src/index';
+import { equalityCheckOnlyFirstArg, equalityCheckNArgsCreator} from '../src/index';
 
-// describes marked with at * are the tests that vary from the reselect test cases
+// tests marked with a * are the tests that vary from the reselect test cases
 describe('equalityCheckOnlyFirstArg', () => {
-    const createSelectorOnlyCheckFirstArg = createSelectorCreator(equalityCheckOnlyFirstArg)
+    // const CreSelEqalityCheckOnlyFirstArg = createSelectorCreator(equalityCheckOnlyFirstArg)
+    const equalityCheckFirstArg = equalityCheckNArgsCreator(1);
+    const CreSelEqualityCheckOnlyFirstArg = createSelectorCreator(equalityCheckFirstArg);
 
     it('should work the same as the basic selector', () => {
-        const selector = createSelectorOnlyCheckFirstArg(
+        const selector = CreSelEqualityCheckOnlyFirstArg(
             (state: any) => state.a,
             a => a
         ) as any;
@@ -18,7 +20,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('*should only check the first argument when multiple keys are used', () => {
-        const selector = createSelectorOnlyCheckFirstArg(
+        const selector = CreSelEqualityCheckOnlyFirstArg(
             (state: any) => state.a,
             (state: any) => state.b,
             (a, b) => a + b
@@ -39,7 +41,7 @@ describe('equalityCheckOnlyFirstArg', () => {
 
     it('should throw an error if a function is not passed in', () => {
         expect(function() {
-            createSelectorOnlyCheckFirstArg(
+            CreSelEqualityCheckOnlyFirstArg(
                 (state: any)=> state.a,
                 'not a function' as any,
                 (a, b) => a + b
@@ -48,7 +50,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('should memoize composite arguments', () => {
-        const selector = createSelectorOnlyCheckFirstArg(
+        const selector = CreSelEqualityCheckOnlyFirstArg(
             (state: any) => state.sub,
             sub => sub
         );
@@ -63,7 +65,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('*should allow the first argument to be an array', () => {
-        const selector = createSelectorOnlyCheckFirstArg(
+        const selector = CreSelEqualityCheckOnlyFirstArg(
             [state => state.a, state => state.b],
             (a, b) => {
                 return a + b;
@@ -86,7 +88,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     it('should recompute result after exception', () => {
         let called = 0;
 
-        const selector = createSelectorOnlyCheckFirstArg(
+        const selector = CreSelEqualityCheckOnlyFirstArg(
             (state: any) => state.a,
             a => {
                 called++;
@@ -101,7 +103,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     it('should memoize previous result before exception', () => {
         let called = 0;
 
-        const selector = createSelectorOnlyCheckFirstArg(
+        const selector = CreSelEqualityCheckOnlyFirstArg(
             (state: any) => state.a,
             a => {
                 called++;
@@ -119,12 +121,12 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('should allow chained selectors', () => {
-        const selector1 = createSelectorOnlyCheckFirstArg(
+        const selector1 = CreSelEqualityCheckOnlyFirstArg(
             state => state.sub,
             sub => sub
         );
 
-        const selector2 = createSelectorOnlyCheckFirstArg(
+        const selector2 = CreSelEqualityCheckOnlyFirstArg(
             selector1,
             sub => sub.value
         );
@@ -140,13 +142,13 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('*should allow chained selectors with variadic args', () => {
-        const selector1 = createSelectorOnlyCheckFirstArg(
+        const selector1 = CreSelEqualityCheckOnlyFirstArg(
             state => state.sub,
             (state, props, another) => props.x + another,
             (sub, x) => ({ sub, x })
         );
 
-        const selector2 = createSelectorOnlyCheckFirstArg(
+        const selector2 = CreSelEqualityCheckOnlyFirstArg(
             selector1,
             (state, props) => props.y,
             (param: any, y) => param.sub.value + param.x + y

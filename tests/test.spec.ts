@@ -3,7 +3,7 @@ import { equalityCheckNParamsCreator } from '../src/index';
 
 // these tests were copied and modified from the reselect project
 // tests marked with a * are the tests that vary from the reselect test cases
-describe('equalityCheckNArgs', () => {
+describe('memoizeEqualityCheckNParams', () => {
 
     describe('equality check first argument only', () => {
         const equalityCheckFirstParam = equalityCheckNParamsCreator(1);

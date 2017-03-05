@@ -1,6 +1,6 @@
 export function equalityCheckNParamsCreator(number: number) {
     return function(func, equalityCheck) {
-        return equalityCheckNArgs(func, number, equalityCheck);
+        return memoizeEqualityCheckNParams(func, number, equalityCheck);
     }
 }
 
@@ -8,7 +8,7 @@ export function defaultEqualityCheck(a, b) {
     return a === b;
 }
 
-export function equalityCheckNArgs(func, numberOfArgsToCheck: number, equalityCheck = defaultEqualityCheck) {
+export function memoizeEqualityCheckNParams(func, numberOfArgsToCheck: number, equalityCheck = defaultEqualityCheck) {
     let lastArgs = null;
     let lastResult = null;
     const checkArgs = (args) => {

@@ -1,11 +1,13 @@
 {
-  "name": "reselect-equality-check-n-args",
+  "name": "reselect-equality-check-n-parameters",
   "version": "0.1.0",
   "description": "Only run the equality check on the first [n] arguments when using reselect",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "cross-env NODE_ENV=test karma start",
-    "build": "cross-env NODE_ENV=build webpack"
+    "build": "cross-env NODE_ENV=build webpack",
+    "prepublish": "cross-env npm run build"
   },
   "author": "Cameron Batt",
   "license": "MIT",

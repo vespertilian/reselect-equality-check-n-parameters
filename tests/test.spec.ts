@@ -1,14 +1,171 @@
-import { createSelectorCreator, createSelector } from 'reselect'
-import { equalityCheckOnlyFirstArg, equalityCheckNArgsCreator} from '../src/index';
+import { createSelectorCreator } from 'reselect'
+import { equalityCheckNParamsCreator } from '../src/index';
 
+// these tests were copied and modified from the reselect project
 // tests marked with a * are the tests that vary from the reselect test cases
-describe('equalityCheckOnlyFirstArg', () => {
-    // const CreSelEqalityCheckOnlyFirstArg = createSelectorCreator(equalityCheckOnlyFirstArg)
-    const equalityCheckFirstArg = equalityCheckNArgsCreator(1);
-    const CreSelEqualityCheckOnlyFirstArg = createSelectorCreator(equalityCheckFirstArg);
+describe('equalityCheckNArgs', () => {
 
+    describe('equality check first argument only', () => {
+        const equalityCheckFirstParam = equalityCheckNParamsCreator(1);
+        const createSelectorFirstParam = createSelectorCreator(equalityCheckFirstParam);
+
+        it('*should only check the first argument when multiple keys are used', () => {
+            const selector = createSelectorFirstParam(
+                (state: any) => state.a,
+                (state: any) => state.b,
+                (a, b) => a + b
+            );
+
+            const state1 = {a: 1, b: 2};
+            expect(selector(state1)).toBe(3);
+            expect(selector(state1)).toBe(3);
+            expect(selector.recomputations()).toBe(1);
+            // should ignore update to b
+            const state2 = {a: 1, b: 3};
+            expect(selector(state2)).toBe(3);
+            expect(selector.recomputations()).toBe(1);
+            const state3 = {a: 2, b: 2};
+            expect(selector(state3)).toBe(4);
+            expect(selector.recomputations()).toBe(2);
+        });
+
+        it('*should allow the first argument to be an array', () => {
+            const selector = createSelectorFirstParam(
+                [state => state.a, state => state.b],
+                (a, b) => {
+                    return a + b;
+                }
+            );
+
+            const state1 = {a: 1, b: 2};
+            expect(selector(state1)).toBe(3);
+            expect(selector(state1)).toBe(3);
+            expect(selector.recomputations()).toBe(1);
+            // should ignore update to b
+            const state2 = {a: 1, b: 3};
+            expect(selector(state2)).toBe(3);
+            expect(selector.recomputations()).toBe(1);
+            const state3 = {a: 2, b: 2};
+            expect(selector(state3)).toBe(4);
+            expect(selector.recomputations()).toBe(2);
+        });
+
+        it('*should allow chained selectors with variadic args', () => {
+            const selector1 = createSelectorFirstParam(
+                state => state.sub,
+                (state, props, another) => props.x + another,
+                (sub, x) => ({ sub, x })
+            );
+
+            const selector2 = createSelectorFirstParam(
+                selector1,
+                (state, props) => props.y,
+                (param: any, y) => param.sub.value + param.x + y
+            );
+
+            const state1 = { sub: {  value: 1 }};
+            expect(selector2(state1, {x: 100, y: 200}, 100)).toEqual(401);
+            expect(selector2(state1, {x: 100, y: 200}, 100)).toEqual(401);
+            expect(selector2.recomputations()).toBe(1);
+
+            // should ignore update to props and another
+            expect(selector2(state1, {x: 100, y: 201}, 200)).toEqual(401);
+            expect(selector2.recomputations()).toBe(1);
+
+            const state2 = { sub: {  value: 2 }};
+            expect(selector2(state2, {x: 100, y: 201}, 200)).toEqual(503);
+            expect(selector2.recomputations()).toBe(2);
+        });
+
+        genericTests(createSelectorFirstParam);
+    });
+
+    describe('equality check first two arguments only', () => {
+
+        const equalityCheckFirstTwoParams = equalityCheckNParamsCreator(2);
+        const createSelectorFirstTwoParams = createSelectorCreator(equalityCheckFirstTwoParams);
+
+        it('*should only check the first two arguments when multiple keys are used', () => {
+            const selector = createSelectorFirstTwoParams(
+                (state: any) => state.a,
+                (state: any) => state.b,
+                (state: any) => state.c,
+                (a, b, c) => a + b + c
+            );
+
+            const state1 = {a: 1, b: 2, c: 3};
+            expect(selector(state1)).toBe(6);
+            expect(selector(state1)).toBe(6);
+            expect(selector.recomputations()).toBe(1);
+            // should ignore update to c
+            const state2 = {a: 1, b: 2, c: 4};
+            expect(selector(state2)).toBe(6);
+            expect(selector.recomputations()).toBe(1);
+            const state4 = {a: 1, b: 3, c: 4};
+            expect(selector(state4)).toBe(8);
+            expect(selector.recomputations()).toBe(2);
+            const state3 = {a: 2, b: 3, c: 4};
+            expect(selector(state3)).toBe(9);
+        });
+
+        it('*should allow the first argument to be an array', () => {
+            const selector = createSelectorFirstTwoParams(
+                [state => state.a, state => state.b, state => state.c],
+                (a, b, c) => {
+                    return a + b + c;
+                }
+            );
+
+            const state1 = {a: 1, b: 2, c: 3};
+            expect(selector(state1)).toBe(6);
+            expect(selector(state1)).toBe(6);
+            expect(selector.recomputations()).toBe(1);
+            // should ignore update to c
+            const state2 = {a: 1, b: 2, c: 4};
+            expect(selector(state2)).toBe(6);
+            expect(selector.recomputations()).toBe(1);
+            const state4 = {a: 1, b: 3, c: 4};
+            expect(selector(state4)).toBe(8);
+            expect(selector.recomputations()).toBe(2);
+            const state3 = {a: 2, b: 3, c: 4};
+            expect(selector(state3)).toBe(9);
+        });
+
+        it('*should allow chained selectors with variadic args', () => {
+            const selector1 = createSelectorFirstTwoParams(
+                state => state.sub,
+                (state, props, another) => props.x + another,
+                (sub, x) => ({ sub, x })
+            );
+
+            const selector2 = createSelectorFirstTwoParams(
+                selector1,
+                (state, props) => props.y,
+                (state, props, another, final) => final,
+                (param: any, y, thirdParam) => param.sub.value + param.x + y + thirdParam
+            );
+
+            const state1 = { sub: {  value: 1 }};
+            expect(selector2(state1, {x: 100, y: 200}, 100, 10)).toEqual(411);
+            expect(selector2(state1, {x: 100, y: 200}, 100, 10)).toEqual(411);
+            expect(selector2.recomputations()).toBe(1);
+
+            // should ignore update to final prop 3rd selection
+            expect(selector2(state1, {x: 100, y: 200}, 100, 20)).toEqual(411);
+            expect(selector2.recomputations()).toBe(1);
+
+            const state2 = { sub: {  value: 2 }};
+            expect(selector2(state2, {x: 100, y: 200}, 100, 20)).toEqual(422);
+            expect(selector2.recomputations()).toBe(2);
+        });
+
+        genericTests(createSelectorFirstTwoParams);
+    })
+});
+
+function genericTests(createSelectorFunc) {
     it('should work the same as the basic selector', () => {
-        const selector = CreSelEqualityCheckOnlyFirstArg(
+        const selector = createSelectorFunc(
             (state: any) => state.a,
             a => a
         ) as any;
@@ -19,29 +176,9 @@ describe('equalityCheckOnlyFirstArg', () => {
         expect(selector.recomputations()).toBe(2);
     });
 
-    it('*should only check the first argument when multiple keys are used', () => {
-        const selector = CreSelEqualityCheckOnlyFirstArg(
-            (state: any) => state.a,
-            (state: any) => state.b,
-            (a, b) => a + b
-        );
-
-        const state1 = {a: 1, b: 2};
-        expect(selector(state1)).toBe(3);
-        expect(selector(state1)).toBe(3);
-        expect(selector.recomputations()).toBe(1);
-        // should ignore update to b
-        const state2 = {a: 1, b: 3};
-        expect(selector(state2)).toBe(3);
-        expect(selector.recomputations()).toBe(1);
-        const state3 = {a: 2, b: 2};
-        expect(selector(state3)).toBe(4);
-        expect(selector.recomputations()).toBe(2);
-    });
-
     it('should throw an error if a function is not passed in', () => {
         expect(function() {
-            CreSelEqualityCheckOnlyFirstArg(
+            createSelectorFunc(
                 (state: any)=> state.a,
                 'not a function' as any,
                 (a, b) => a + b
@@ -50,7 +187,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('should memoize composite arguments', () => {
-        const selector = CreSelEqualityCheckOnlyFirstArg(
+        const selector = createSelectorFunc(
             (state: any) => state.sub,
             sub => sub
         );
@@ -64,31 +201,11 @@ describe('equalityCheckOnlyFirstArg', () => {
         expect(selector.recomputations()).toBe(2);
     });
 
-    it('*should allow the first argument to be an array', () => {
-        const selector = CreSelEqualityCheckOnlyFirstArg(
-            [state => state.a, state => state.b],
-            (a, b) => {
-                return a + b;
-            }
-        );
-
-        const state1 = {a: 1, b: 2};
-        expect(selector(state1)).toBe(3);
-        expect(selector(state1)).toBe(3);
-        expect(selector.recomputations()).toBe(1);
-        // should ignore update to b
-        const state2 = {a: 1, b: 3};
-        expect(selector(state2)).toBe(3);
-        expect(selector.recomputations()).toBe(1);
-        const state3 = {a: 2, b: 2};
-        expect(selector(state3)).toBe(4);
-        expect(selector.recomputations()).toBe(2);
-    });
 
     it('should recompute result after exception', () => {
         let called = 0;
 
-        const selector = CreSelEqualityCheckOnlyFirstArg(
+        const selector = createSelectorFunc(
             (state: any) => state.a,
             a => {
                 called++;
@@ -103,7 +220,7 @@ describe('equalityCheckOnlyFirstArg', () => {
     it('should memoize previous result before exception', () => {
         let called = 0;
 
-        const selector = CreSelEqualityCheckOnlyFirstArg(
+        const selector = createSelectorFunc(
             (state: any) => state.a,
             a => {
                 called++;
@@ -121,12 +238,12 @@ describe('equalityCheckOnlyFirstArg', () => {
     });
 
     it('should allow chained selectors', () => {
-        const selector1 = CreSelEqualityCheckOnlyFirstArg(
+        const selector1 = createSelectorFunc(
             state => state.sub,
             sub => sub
         );
 
-        const selector2 = CreSelEqualityCheckOnlyFirstArg(
+        const selector2 = createSelectorFunc(
             selector1,
             sub => sub.value
         );
@@ -140,31 +257,4 @@ describe('equalityCheckOnlyFirstArg', () => {
         expect(selector2(state2)).toEqual(2);
         expect(selector2.recomputations()).toBe(2);
     });
-
-    it('*should allow chained selectors with variadic args', () => {
-        const selector1 = CreSelEqualityCheckOnlyFirstArg(
-            state => state.sub,
-            (state, props, another) => props.x + another,
-            (sub, x) => ({ sub, x })
-        );
-
-        const selector2 = CreSelEqualityCheckOnlyFirstArg(
-            selector1,
-            (state, props) => props.y,
-            (param: any, y) => param.sub.value + param.x + y
-        );
-
-        const state1 = { sub: {  value: 1 }};
-        expect(selector2(state1, {x: 100, y: 200}, 100)).toEqual(401);
-        expect(selector2(state1, {x: 100, y: 200}, 100)).toEqual(401);
-        expect(selector2.recomputations()).toBe(1);
-
-        // should ignore update to props and another
-        expect(selector2(state1, {x: 100, y: 201}, 200)).toEqual(401);
-        expect(selector2.recomputations()).toBe(1);
-
-        const state2 = { sub: {  value: 2 }};
-        expect(selector2(state2, {x: 100, y: 201}, 200)).toEqual(503);
-        expect(selector2.recomputations()).toBe(2);
-    })
-});
+}

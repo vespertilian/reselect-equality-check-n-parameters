@@ -83,30 +83,44 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+function equalityCheckNParamsCreator(number) {
+    return function (func, equalityCheck) {
+        return memoizeEqualityCheckNParams(func, number, equalityCheck);
+    };
+}
+exports.equalityCheckNParamsCreator = equalityCheckNParamsCreator;
 function defaultEqualityCheck(a, b) {
     return a === b;
 }
 exports.defaultEqualityCheck = defaultEqualityCheck;
-// reselect-equality-check-n-args
-function equalityCheckOnlyFirstArg(func, equalityCheck) {
+function memoizeEqualityCheckNParams(func, numberOfArgsToCheck, equalityCheck) {
     if (equalityCheck === void 0) { equalityCheck = defaultEqualityCheck; }
-    var lastArg = null;
+    var lastArgs = null;
     var lastResult = null;
+    var checkArgs = function (args) {
+        var result = true;
+        for (var i = 0; i < numberOfArgsToCheck; i++) {
+            var isEqual = equalityCheck(args[i], lastArgs[i]);
+            if (!isEqual)
+                result = false;
+        }
+        return result;
+    };
     return function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        if (lastArg !== null &&
-            equalityCheck(lastArg, args[0])) {
-            return lastResult;
+        if (lastArgs === null ||
+            lastArgs.length !== args.length ||
+            !checkArgs(args)) {
+            lastResult = func.apply(void 0, args);
         }
-        lastArg = args[0];
-        lastResult = func.apply(void 0, args);
+        lastArgs = args;
         return lastResult;
     };
 }
-exports.equalityCheckOnlyFirstArg = equalityCheckOnlyFirstArg;
+exports.memoizeEqualityCheckNParams = memoizeEqualityCheckNParams;
 
 
 /***/ })

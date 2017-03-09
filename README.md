@@ -29,6 +29,5 @@ To be used as an extension to the reselect library
     
     const state3 = {a: 2, b: 4};
     selector(state3) // would be 6
-    selector(state3) // would be 2
-    
+
 ```

@@ -1,8 +1,13 @@
 # reselect-equality-check-n-parameters
 
-### A simple memoize factory function that only checks equality on the first n parameters
+#### A simple memoize factory function that only checks equality on the first n parameters
 
-To be used as an extension to the reselect library
+To be used as an extension to the [reselect] library.
+
+[reselect]: https://github.com/reactjs/reselect
+
+## Install:
+    npm install reselect-equality-check-n-parameters --save
 
 ## Example:
 ```js
@@ -31,3 +36,22 @@ To be used as an extension to the reselect library
     selector(state3) // would be 6
 
 ```
+
+
+## NPM tasks
+
+- `npm test` runs the tests via karma
+- `npm build` builds a UMD version for distribution with webpack
+- `npm pre-publish` used when publishing to NPM
+
+## Publishing checklist
+
+1. Run tests `npm test`
+2. Run build and check that your module was built (needs to be exported via index.ts to index.js)
+3. Install it into your project to test before publishing by running `npm install '/path-to-this/'`
+4. Bump version in package.json following [Semantic Versioning] SemVer
+5. Tag the release commit in git: `git tag -a v0.1.5 -m "Published v0.1.5"`
+6. Push the tags up to github: `git push origin --tags`
+7. Publish `npm publish`
+
+[Semantic Versioning]: http://semver.org/

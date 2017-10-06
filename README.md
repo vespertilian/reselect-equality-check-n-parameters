@@ -27,16 +27,16 @@ To be used as an extension to the [reselect] library.
     );
 
     const state1 = {a: 1, b: 2};
-    selector(state1) // would be 3
+    selector(state1); // would be 3
     
-    // b will not be check for equality
-    // even if it has changed no new value will be calculated
+    // "b" will not be checked for equality
+    // even if it has changed, no new value will be calculated
     const state2 = {a: 1, b: 4};
     selector(state2) // would be 3
     selector.recomputations() // would be 1
     
     const state3 = {a: 2, b: 4};
-    selector(state3) // would be 6
+    selector(state3) // would be 6 as "a" has changed
 
 ```
 

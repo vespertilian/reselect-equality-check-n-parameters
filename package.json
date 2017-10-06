@@ -1,6 +1,6 @@
 {
   "name": "reselect-equality-check-n-parameters",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Only run the equality check on the first [n] arguments when using reselect",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -27,13 +27,13 @@
     "karma-jasmine": "1.1.0",
     "karma-mocha-reporter": "^2.2.2",
     "karma-webpack": "2.0.2",
-    "reselect": "2.5.4",
+    "reselect": "3.0.1",
     "source-map-loader": "0.1.6",
     "ts-loader": "2.0.1",
     "typescript": "2.2.1",
     "webpack": "2.2.1"
   },
   "peerDependencies": {
-    "reselect": "2.x"
+    "reselect": "3.x"
   }
 }

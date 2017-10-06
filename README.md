@@ -11,6 +11,9 @@ To be used as an extension to the [reselect] library.
 
 ## Example:
 ```js
+    import { createSelectorCreator } from 'reselect';
+    import { equalityCheckNParamsCreator } from 'reselect-equality-check-n-parameters';
+    
     // This creates a memoize function that will only check the first parameter
     const equalityCheckFirstParam = equalityCheckNParamsCreator(1);
 
